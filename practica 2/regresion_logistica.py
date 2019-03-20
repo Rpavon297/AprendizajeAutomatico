@@ -86,7 +86,6 @@ pos = np.where(Y == 1)
 posn = np.where(Y == 0)
 plt.scatter(X[0, pos], X[1, pos], marker='.', c='g')
 plt.scatter(X[0, posn], X[1, posn], marker='x', c='r')
-plt.show()
 
 X = [[1, 2, 3, 22, 5]]
 Y= [10]
@@ -94,3 +93,6 @@ Z = [[2,2,3],[2,5,7]]
 
 res = sigmoid(X)
 print(res)
+
+plt.title(res)
+plt.show()
