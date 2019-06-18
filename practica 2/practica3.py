@@ -48,24 +48,53 @@ def prediccion(theta, X):
 
     return p
 
+def red(X, theta1, theta2):
+    capa1 = sigmoid(np.dot(X, theta1.T))
+    capa1 = np.hstack((np.ones((X.shape[0], 1)), capa1))
 
-if __name__ == "__main__":
-    data = loadmat(os.path.abspath("ex3data1.mat"))
-    y = data['y'].ravel()
-    X = data['X']
+    capa2 = sigmoid(np.dot(capa1, theta2.T))
+    salida = np.argmax(capa2, axis=1)
+    #Los indices empiezan en 1, no en 0
+    salida += 1
+
+    return salida
+
+def parte1(X, Y, data):
 
     print(data)
     print(X.shape)
     print(y.flatten())
 
     sample = np.random.choice(X.shape[0], 10)
-    plt.imshow(X[sample, :].reshape(-1,20).T)
+    plt.imshow(X[sample, :].reshape(-1, 20).T)
     plt.axis('off')
     plt.show()
     print("Calculando parametros:------")
-    theta = oneVsAll(X,y,10,0.1)
+    theta = oneVsAll(X, y, 10, 0.1)
     print("Realizando prediccion:------")
     p = prediccion(theta, X)
     print('Acieto de:', np.mean(p == y) * 100)
+
+if __name__ == "__main__":
+    data = loadmat(os.path.abspath("ex3data1.mat"))
+    y = data['y'].ravel()
+    X = data['X']
+
+    parte1(X,y,data)
+
+    X = np.hstack((np.ones((X.shape[0], 1)), X))
+
+    weights = loadmat('ex3weights.mat')
+    theta1, theta2 = weights['Theta1'], weights['Theta2']
+
+    pred = red(X, theta1, theta2)
+    print('Acieto de:', np.mean(pred == y) * 100)
+
+
+
+
+
+
+
 
 
