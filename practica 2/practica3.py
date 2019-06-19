@@ -80,7 +80,6 @@ if __name__ == "__main__":
     y = data['y'].ravel()
     X = data['X']
 
-    parte1(X,y,data)
 
     X = np.hstack((np.ones((X.shape[0], 1)), X))
 
@@ -89,6 +88,7 @@ if __name__ == "__main__":
 
     pred = red(X, theta1, theta2)
     print('Acieto de:', np.mean(pred == y) * 100)
+
 
 
 

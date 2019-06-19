@@ -32,9 +32,9 @@ def h(params, X):
     return sigmoid(hipot)
 
 def costvector(theta,X, y):
-    hipTX = sigmoid(np.dot(X, theta))
+    hTX = sigmoid(np.dot(X, theta))
 
-    return - (np.dot(y, np.log(hipTX).T) + np.dot(np.log(1 - hipTX).T, (1 - y))) / len(y)
+    return - (np.dot(y, np.log(hTX).T) + np.dot(np.log(1 - hTX).T, (1 - y))) / len(y)
 
 
 def costvector2(theta, X, y, l):
@@ -44,9 +44,9 @@ def costvector2(theta, X, y, l):
         np.square(theta[1:]))
 
 def gradiante(theta,X, y):
-    hipTX = sigmoid(np.dot(X, theta))
+    hTX = sigmoid(np.dot(X, theta))
 
-    return np.dot(X.T, (hipTX -y)) / len(y)
+    return np.dot(X.T, (hTX -y)) / len(y)
 
 def gradiante2(theta, X, y, l):
     hipTX = sigmoid(np.dot(X, theta))
@@ -60,7 +60,6 @@ def mostrar(X, Y):
 
     plt.scatter(X[pos, 0], X[pos, 1], marker='.', c='g')
     plt.scatter(X[posn, 0], X[posn, 1], marker='x', c='r')
-
 
 def mostrarSol(X, Y, theta):
     plt.figure()
@@ -87,7 +86,6 @@ def mostrarSol2(X,y,theta,poly):
     h = sigmoid(poly.fit_transform(np.c_[xx1.ravel(), xx2.ravel()]).dot(theta))
     h = h.reshape(xx1.shape)
     plt.contour(xx1, xx2, h, [0.5], linewidths=1, colors='g')
-    plt.savefig("boundary.pdf")
 
     plt.show()
 
@@ -115,11 +113,11 @@ if __name__ == "__main__":
 
     del datos[-1]
     del datos2[-1]
-    """
     i = 0
-
-
+    """
     print("DATOS BASE-PARTE 1:---------")
+
+
     while i < len(datos):
         X1 = np.append(X1, float(datos[i]))
         X2 = np.append(X2, float(datos[i+1]))
@@ -130,29 +128,30 @@ if __name__ == "__main__":
     Xp = np.array([X1,X2])
     Xp = np.transpose(Xp)
     X = np.hstack((np.ones((Xp.shape[0],1)), Xp))
+
+    mostrar(Xp, Y)
+
     params = np.zeros(X.shape[1])
-
-    res = sigmoid(X)
-    cost = costvector(params,X,Y)
-    grad = gradiante(params,X,Y)
-
-    print(X.shape, Y.shape, params.shape)
-    print(cost)
-    print(grad)
 
     result = opt.fmin_tnc(costvector, params, gradiante, args=(X,Y))
     params_opt = result[0]
 
     print("COSTE MINIMO:--------")
+
     coste_opt = costvector(params_opt, X, Y)
     print(coste_opt)
 
     mostrarSol(Xp,Y,params_opt)
 
+
+
     print("RATIO DE ACIERTO:-----")
     print(porcentaje(X,Y,params_opt))
-    """
+
+
     print("DATOS BASE-PARTE 2:---------")
+
+"""
 
     X1 = np.array([])
     X2 = np.array([])
@@ -173,6 +172,7 @@ if __name__ == "__main__":
     X = poly.fit_transform(Xp)
     print(X.shape)
     params = np.zeros(X.shape[1])
+    mostrar(Xp,Y)
 
     theta = np.zeros(X.shape[1])  # tam 28 atrib
     J = costvector2(theta, X, Y, 1)
@@ -180,7 +180,6 @@ if __name__ == "__main__":
 
     gradient = gradiante2(theta, X, Y, 1)
     print(gradient)
-
     print("CALCULO DE PARAMETROS OPTIMOS:-------")
     result = opt.fmin_tnc(costvector2, theta, gradiante2, args=(X, Y, 1))
     theta_opt = result[0]
@@ -188,3 +187,5 @@ if __name__ == "__main__":
     print(theta_opt)
     print("coste optimo", coste_opt)
     mostrarSol2(Xp,Y,theta_opt,poly)
+
+

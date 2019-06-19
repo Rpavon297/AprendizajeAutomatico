@@ -71,18 +71,12 @@ def curvaAprendizaje(X, y, Xval, yval, l):
 def polyCaracteristicas(X, p):
     X_poly = X
 
-    # Iterate over the polynomial power.
     for i in range(1, p):
-        # Add the i-th power column in X.
         X_poly = np.column_stack((X_poly, np.power(X, i + 1)))
 
     return X_poly
 
 def normalizar_caract(X):
-    """ recibe una matriz de dimensión m x p y
-    devuelve: otra matriz de la misma dimensión
-    normalizada columna por columna a media 0 y
-    desviación estándar 1 """
 
     mu = np.mean(X, axis=0)
     sigma = np.std(X, axis=0, ddof=1)
@@ -175,29 +169,29 @@ if __name__ == "__main__":
     plt.ylabel('Water flowing out of the dam (y)')
     plt.plot(X, np.dot(X2, theta), '-', lw=1)
     plt.show()
-    """
+    
     #PARTE 2
     error_entren, error_val = curvaAprendizaje(np.hstack((np.ones((m, 1)), X)), y, np.hstack((np.ones((Xval.shape[0], 1)), Xval)), yval, 0)
 
-    """
+
     plt.plot(np.arange(1, m+1), error_entren, np.arange(1, m+1), error_val, lw=2)
     plt.title('Learning curve for linear regression')
     plt.legend(['Train', 'Cross Validation'])
     plt.xlabel('Number of training examples')
     plt.ylabel('Error')
     plt.show()
-    """
+
 
     print('# Ejemplos de entrenamiento\tError entrenado\tError validacion\n');
     for i in range(0, m):
         print('  \t%d\t\t%f\t%f\n' % (i+1, error_entren[i], error_val[i]))
-
+"""
     #PARTE 3
-    p = 8
 
     # X_poly caracteristicas polinomicas y  normalizar
+
+    p = 8
     X_poly = polyCaracteristicas(X, p)
-    print(X_poly.shape)
     X_poly, mu, sigma = normalizar_caract(X_poly)
     X_poly = np.hstack((np.ones((m, 1)), X_poly))
 
@@ -212,7 +206,7 @@ if __name__ == "__main__":
     X_poly_val = np.hstack((np.ones((X_poly_val.shape[0], 1)), X_poly_val))
 
     print("Ejemplo de entrenamiento normalizado :")
-    """
+
     print(X_poly[0, :])
 
     graficaEntre(X, y, X_poly, 0)
@@ -223,7 +217,8 @@ if __name__ == "__main__":
 
     graficaEntre(X, y, X_poly, 100)
     plotCurve(X_poly, y, X_poly_val, yval, 100)
-    """
+
+    plt.show()
 
     #PARTE 4
     lambda_vec, error_train, error_val = validacionCurvaLambda(X_poly, y, X_poly_val, yval)

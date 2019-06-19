@@ -44,9 +44,9 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
         cost += -(np.sum(np.dot(Y[i,], np.log(sig_res2[i,])) + np.dot((1 - Y[i,]), np.log(1 - sig_res2[i,]))) / m)
         
     cost += reg / (2 * m) * (np.sum(theta1_s) + np.sum(theta2_s))
-    
 
-    #gradiente
+    #GRADIENTE
+
     d3 = sig_res2 - Y
     D2 = np.dot(d3.T, sig_res1)
 
@@ -71,6 +71,19 @@ def pesosAleatorios(L_in, L_out):
 
     return np.random.rand(L_out, 1 + L_in) * 2 * epsilon_init - epsilon_init
 
+
+def pred(theta1, theta2, X):
+    X = np.hstack((np.ones((X.shape[0], 1)), X))
+    a1 = sigmoid(np.dot(X, theta1.T))
+    a1 = np.hstack((np.ones((X.shape[0], 1)), a1))
+
+    a2 = sigmoid(np.dot(a1, theta2.T))
+
+    indices = np.argmax(a2, axis=1)
+    indices += 1
+
+    return indices
+
 if __name__ == "__main__":
     data = loadmat('ex4data1.mat')
 
@@ -90,9 +103,10 @@ if __name__ == "__main__":
 
     print(sel)
 
-    #fig, ax = displayData(sel)
+    fig, ax = displayData(sel)
     cost, grad = backprop(params_rn, 400, 25, 10, X, y, 1.0)
 
+    print("COSTE PARA THETA1 Y THETA 2 PROPORCIONADAS: \n")
     print(cost)
 
     print("COMPROBACION GRADIANTE:-----")
@@ -101,6 +115,23 @@ if __name__ == "__main__":
     initial_params_rn = np.hstack((initial_theta_1.ravel(), initial_theta_2.ravel()))
 
     reg = 3
+
     checkNNGradients(backprop, reg)
     J, G = backprop(initial_params_rn, 400, 25, 10, X, y, 3)
-    print(J, checkNNGradients(backprop, reg))
+    print(checkNNGradients(backprop, reg))
+
+    reg = 1
+    options = {'maxiter': 70}
+    pesos = opt.minimize(backprop, initial_params_rn,
+                       args=(400, 25,
+                             10, X, y, reg), method='TNC',
+                       jac=True, options=options)
+    param_en = pesos.x
+
+    # theta1 y theta de params_rn
+    Theta1 = np.reshape(param_en[:25 * (400 + 1)], (25, (400 + 1)))
+    Theta2 = np.reshape(param_en[(25 * (400 + 1)):],(10, (25 + 1)))
+
+    pred = pred(Theta1, Theta2, X)
+
+    print("Prediccion de :", np.mean(pred == y) * 100)
